@@ -2,7 +2,9 @@ package org.example.usermanagement.service.impl;
 
 import org.example.usermanagement.dto.CreateUpdateUserDto;
 import org.example.usermanagement.entity.User;
+import org.example.usermanagement.exception.EmailAlreadyExistsException;
 import org.example.usermanagement.exception.NotFoundException;
+import org.example.usermanagement.mapper.UserMapper;
 import org.example.usermanagement.repository.UserRepository;
 import org.example.usermanagement.service.UserService;
 import org.springframework.data.domain.*;
@@ -16,23 +18,20 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repo;
+    private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository repo) {
+    public UserServiceImpl(UserRepository repo, UserMapper userMapper) {
         this.repo = repo;
+        this.userMapper = userMapper;
     }
 
     @Override
     public User create(CreateUpdateUserDto dto) {
         if (repo.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        User u = new User(
-                dto.getName(),
-                dto.getEmail(),
-                dto.getPhone(),
-                dto.getRole()
-        );
+        User u = userMapper.toEntity(dto);
 
         return repo.save(u);
     }
@@ -55,13 +54,10 @@ public class UserServiceImpl implements UserService {
 
         if (!existingUser.getEmail().equals(dto.getEmail())
                 && repo.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        existingUser.setName(dto.getName());
-        existingUser.setEmail(dto.getEmail());
-        existingUser.setPhone(dto.getPhone());
-        existingUser.setRole(dto.getRole());
+        userMapper.updateUserFromDto(dto, existingUser);
 
         return repo.save(existingUser);
     }

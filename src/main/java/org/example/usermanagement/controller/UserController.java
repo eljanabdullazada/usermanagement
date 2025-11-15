@@ -3,6 +3,7 @@ package org.example.usermanagement.controller;
 import org.example.usermanagement.dto.CreateUpdateUserDto;
 import org.example.usermanagement.dto.UserDto;
 import org.example.usermanagement.entity.User;
+import org.example.usermanagement.mapper.UserMapper;
 import org.example.usermanagement.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -17,9 +18,11 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService service;
+    private final UserMapper userMapper;
 
-    public UserController(UserService service) {
+    public UserController(UserService service, UserMapper userMapper) {
         this.service = service;
+        this.userMapper = userMapper;
     }
 
     @PostMapping
@@ -27,14 +30,15 @@ public class UserController {
         User user = service.create(dto);
         return ResponseEntity
                 .created(URI.create("/api/users/" + user.getId()))
-                .body(toDto(user));
+                .body(userMapper.toDto(user));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(toDto(service.findById(id)));
+    public ResponseEntity<UserDto> getById(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(userMapper.toDto(service.findById(id)));
     }
 
+    // used -parameters in build.gradle to specify method parameter names automatically
     @GetMapping
     public ResponseEntity<Page<UserDto>> list(
             @RequestParam(defaultValue = "0") int page,
@@ -43,7 +47,7 @@ public class UserController {
     ) {
         return ResponseEntity.ok(
                 service.listUsers(page, size, sortBy)
-                        .map(this::toDto)
+                        .map(userMapper::toDto)
         );
     }
 
@@ -52,24 +56,13 @@ public class UserController {
             @PathVariable UUID id,
             @Valid @RequestBody CreateUpdateUserDto dto
     ) {
-        return ResponseEntity.ok(toDto(service.update(id, dto)));
+        return ResponseEntity.ok(userMapper.toDto(service.update(id, dto)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    private UserDto toDto(User u) {
-        UserDto dto = new UserDto();
-        dto.setId(u.getId());
-        dto.setName(u.getName());
-        dto.setEmail(u.getEmail());
-        dto.setPhone(u.getPhone());
-        dto.setRole(u.getRole());
-        dto.setCreatedAt(u.getCreatedAt());
-        return dto;
     }
 
     @GetMapping("/health")
