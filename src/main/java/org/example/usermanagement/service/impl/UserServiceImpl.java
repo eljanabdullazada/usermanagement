@@ -1,5 +1,6 @@
 package org.example.usermanagement.service.impl;
 
+import org.example.usermanagement.dto.CreateUpdateUserDto;
 import org.example.usermanagement.entity.User;
 import org.example.usermanagement.exception.NotFoundException;
 import org.example.usermanagement.repository.UserRepository;
@@ -21,44 +22,53 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User u) {
-        if (repo.existsByEmail(u.getEmail())) {
+    public User create(CreateUpdateUserDto dto) {
+        if (repo.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
+
+        User u = new User(
+                dto.getName(),
+                dto.getEmail(),
+                dto.getPhone(),
+                dto.getRole()
+        );
+
         return repo.save(u);
     }
 
     @Override
-    public User getById(UUID id) {
+    public User findById(UUID id) {
         return repo.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     @Override
-    public Page<User> list(int page, int size, String sortBy) {
+    public Page<User> listUsers(int page, int size, String sortBy) {
         Pageable p = PageRequest.of(page, size, Sort.by(sortBy).ascending());
         return repo.findAll(p);
     }
 
     @Override
-    public User update(UUID id, String name, String email, String phone, String role) {
-        User user = getById(id);
+    public User update(UUID id, CreateUpdateUserDto dto) {
+        User existingUser = findById(id);
 
-        if (email != null && !email.equals(user.getEmail()) && repo.existsByEmail(email)) {
+        if (!existingUser.getEmail().equals(dto.getEmail())
+                && repo.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        if (name != null) user.setName(name);
-        if (email != null) user.setEmail(email);
-        if (phone != null) user.setPhone(phone);
-        if (role != null) user.setRole(role);
+        existingUser.setName(dto.getName());
+        existingUser.setEmail(dto.getEmail());
+        existingUser.setPhone(dto.getPhone());
+        existingUser.setRole(dto.getRole());
 
-        return repo.save(user);
+        return repo.save(existingUser);
     }
 
     @Override
     public void delete(UUID id) {
-        User u = getById(id);
+        User u = findById(id);
         repo.delete(u);
     }
 }
