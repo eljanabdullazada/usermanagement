@@ -41,9 +41,9 @@ public class UserController {
     // used -parameters in build.gradle to specify method parameter names automatically
     @GetMapping
     public ResponseEntity<Page<UserDto>> list(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortBy
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "createdAt") String sortBy
     ) {
         return ResponseEntity.ok(
                 service.listUsers(page, size, sortBy)

@@ -1,6 +1,8 @@
 package org.example.usermanagement.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -8,6 +10,7 @@ import java.util.UUID;
 @Table(name = "users", indexes = {
         @Index(name = "idx_user_email", columnList = "email")
 })
+@Data
 public class User {
 
     @Id
@@ -26,8 +29,6 @@ public class User {
 
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    // constructors, getters, setters
-
     public User() {}
 
     public User(String name, String email, String phone, String role) {
@@ -35,43 +36,6 @@ public class User {
         this.email = email;
         this.phone = phone;
         this.role = role;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-    public void setId(UUID id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getPhone() {
-        return phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    public String getRole() {
-        return role;
-    }
-    public void setRole(String role) {
-        this.role = role;
-    }
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-    public void setCreatedAt(OffsetDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
 
