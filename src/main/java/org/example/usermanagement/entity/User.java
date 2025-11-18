@@ -2,8 +2,6 @@ package org.example.usermanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.example.usermanagement.entity.UserRole;
-
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -30,7 +28,15 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    private OffsetDateTime createdAt = OffsetDateTime.now();
+    // ← Updated field for createdAt
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private OffsetDateTime createdAt;
+
+    // ← PrePersist to automatically set createdAt before saving
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = OffsetDateTime.now();
+    }
 
     public User() {}
 
@@ -41,4 +47,3 @@ public class User {
         this.role = role;
     }
 }
-
