@@ -2,6 +2,7 @@ package org.example.usermanagement.service.impl;
 
 import org.example.usermanagement.dto.CreateUpdateUserDto;
 import org.example.usermanagement.entity.User;
+import org.example.usermanagement.entity.UserRole;
 import org.example.usermanagement.exception.EmailAlreadyExistsException;
 import org.example.usermanagement.exception.NotFoundException;
 import org.example.usermanagement.mapper.UserMapper;
@@ -36,6 +37,10 @@ public class UserServiceImpl implements UserService {
         if (repo.existsByEmail(dto.getEmail())) {
             log.warn("Failed to create user: email already exists={}", dto.getEmail());
             throw new EmailAlreadyExistsException("Email already exists");
+        }
+
+        if (dto.getRole() == null) {
+            dto.setRole(UserRole.ROLE_USER);
         }
 
         User u = userMapper.toEntity(dto);

@@ -2,6 +2,7 @@ package org.example.usermanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.example.usermanagement.entity.UserRole;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -25,13 +26,15 @@ public class User {
 
     private String phone;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role;
 
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
     public User() {}
 
-    public User(String name, String email, String phone, String role) {
+    public User(String name, String email, String phone, UserRole role) {
         this.name = name;
         this.email = email;
         this.phone = phone;

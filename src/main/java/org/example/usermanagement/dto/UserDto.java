@@ -1,6 +1,7 @@
 package org.example.usermanagement.dto;
 
 import lombok.Data;
+import org.example.usermanagement.entity.UserRole;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -10,7 +11,7 @@ public class UserDto {
     private String name;
     private String email;
     private String phone;
-    private String role;
+    private UserRole role;
     private OffsetDateTime createdAt;
 
     public UserDto() {}
