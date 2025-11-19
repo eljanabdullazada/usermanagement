@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE & system files
+.idea/
+.vscode/
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings
+.factorypath
+.apt_generated
+.springBeans
+.sts4-cache
+.DS_Store
+
+# Gradle
+.gradle/
+build/
+out/
+bin/
+dist/
+nbbuild/
+nbdist/
+/nbproject/private/
+.nb-gradle/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Keep Gradle wrapper (needed for multi-stage builds)
+!gradle/wrapper/**
+!gradlew
+!gradlew.bat
