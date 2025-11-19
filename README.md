@@ -110,6 +110,28 @@ You can test the health of the deployed API here:
 | `GET`    | `/api/users/health`| Checks the health status of the API (returns 200 OK). |
 
 
+### Pagination
+
+The `/api/users` endpoint supports pagination to allow clients to retrieve the list of users in manageable chunks. You can control the pagination using the following query parameters:
+
+- `page`: The page number to retrieve (0-indexed).
+- `size`: The number of items to include per page.
+- `sortBy`: The field to sort the results by (e.g., `id`, `name`, `email`).
+
+**Example Pagination Request:**
+
+To get the second page with 2 users per page, sorted by their ID, you can use the following URL:
+
+```
+https://usermanagement-55xb.onrender.com/api/users?page=1&size=2&sortBy=id
+```
+
+To get the first page with 4 users per page, sorted by their ID, you can use the following URL:
+
+```
+https://usermanagement-55xb.onrender.com/api/users?page=0&size=4&sortBy=id
+```
+
 ### Request/Response Examples
 
 **Example Create/Update Request Body:**
